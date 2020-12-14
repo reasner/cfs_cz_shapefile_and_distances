@@ -99,6 +99,27 @@ cz_out_df = pd.DataFrame(cz_out)
 cz_out_path = os.path.join(cd,'cz00',r'cz_dist.csv')
 cz_out_df.to_csv(cz_out_path,index=False)
 
+# PLOTS
+##cfs
+projection = "+proj=laea +lat_0=30 +lon_0=-95"
+fig, ax = plt.subplots(1, figsize=(8.5,6.5))
+ax.axis('off')
+cfs_map = cfs_map.to_crs(projection)
+cfs_centroids_df = cfs_centroids_df.to_crs(projection)
+cfs_map.plot(ax=ax,facecolor="none",linewidth=0.5, edgecolor='gray')
+cfs_centroids_df.plot(ax=ax,marker='*',color='red',markersize=1)
+plt.title('CFS (2007) Boundaries and Centroids')
+cfs_plot_path = os.path.join(cd,r'cfs07','cfs_cent_plot.png')
+plt.savefig(cfs_plot_path,bbox_inches='tight',dpi=300)
 
-
-
+##cz
+projection = "+proj=laea +lat_0=30 +lon_0=-95"
+fig, ax = plt.subplots(1, figsize=(8.5,6.5))
+ax.axis('off')
+cz_map = cz_map.to_crs(projection)
+cz_centroids_df = cz_centroids_df.to_crs(projection)
+cz_map.plot(ax=ax,facecolor="none",linewidth=0.5,edgecolor='gray')
+cz_centroids_df.plot(ax=ax,marker='*',color='red',markersize=1)
+plt.title('CZ (2007) Boundaries and Centroids')
+cz_plot_path = os.path.join(cd,r'cz00','cz_cent_plot.png')
+plt.savefig(cz_plot_path,bbox_inches='tight',dpi=300)

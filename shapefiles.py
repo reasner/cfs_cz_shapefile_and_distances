@@ -3,10 +3,8 @@ import pandas as pd
 import geopandas as gpd
 import matplotlib.pyplot as plt
 import matplotlib as mpl
-import math
 import itertools
 import warnings
-from gcd import gc2_hf
 
 # SETUP
 cd = os.path.join(os.path.expanduser("~"),r'Projects',r'cfs_cz_shapefile_and_distances')
@@ -77,7 +75,9 @@ fig, ax = plt.subplots(1, figsize=(8.5,6.5))
 ax.axis('off')
 cfs_reload_map = cfs_reload_map.to_crs(projection)
 cfs_reload_map.plot(ax=ax,facecolor="none",linewidth=0.5,edgecolor='gray')
-plt.show()
+plt.title('CFS (2007) Boundaries')
+cfs_plot_path = os.path.join(cd,r'cfs07','cfs_bound_plot.png')
+plt.savefig(cfs_plot_path,bbox_inches='tight',dpi=300)
 
 ##cz shapfile
 cz_reload_map = gpd.read_file(cz_shapfile_path)
@@ -86,4 +86,8 @@ fig, ax = plt.subplots(1, figsize=(8.5,6.5))
 ax.axis('off')
 cz_reload_map = cz_reload_map.to_crs(projection)
 cz_reload_map.plot(ax=ax,facecolor="none",linewidth=0.5,edgecolor='gray')
-plt.show()
+plt.title('CZ (2007) Boundaries')
+cz_plot_path = os.path.join(cd,r'cz00','cz_bound_plot.png')
+plt.savefig(cz_plot_path,bbox_inches='tight',dpi=300)
+
+
