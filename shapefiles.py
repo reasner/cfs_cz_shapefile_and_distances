@@ -41,7 +41,7 @@ cfs_crosswalk = cfs_crosswalk[['fips','CFS07_AREA','CFS07_NAME']]
 cfs_crosswalk.columns = ['fips', 'cfs_area','cfs_name']
 ##join county map and cfs crosswalk
 cfs_comb_df = pd.merge(county_map,cfs_crosswalk,on='fips',how='inner')
-cfs_map = cfs_comb_df.dissolve(by='cfs_area')
+cfs_map = cfs_comb_df.dissolve(by='cfs_name')
 cfs_map.reset_index(inplace=True)
 cfs_map = cfs_map[['cfs_area','cfs_name','geometry']]
 cfs_shapfile_path = os.path.join(cd,r'cfs07','cfs07.shp')
