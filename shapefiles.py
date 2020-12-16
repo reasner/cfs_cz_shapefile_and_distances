@@ -12,6 +12,8 @@ if not os.path.exists(os.path.join(cd,r'cfs07')):
     os.makedirs(os.path.join(cd,r'cfs07'))
 if not os.path.exists(os.path.join(cd,r'cz00')):
     os.makedirs(os.path.join(cd,r'cz00'))
+if not os.path.exists(os.path.join(cd,r'fips')):
+    os.makedirs(os.path.join(cd,r'fips'))
 
 # LOAD COUNTY SHAPEFILE
 shapefile_path = os.path.join(cd,r'gz_2010_us_050_00_500k',r'gz_2010_us_050_00_500k.shp')
@@ -66,8 +68,33 @@ cz_map = cz_map[['cz_area','geometry']]
 cz_shapfile_path = os.path.join(cd,r'cz00','cz00.shp')
 cz_map.to_file(cz_shapfile_path,driver='ESRI Shapefile')
 
+# FIPS Shapefile
+fips_crosswalk = pd.read_csv('fips_crosswalk.csv')
+fips_crosswalk['fips'] = fips_crosswalk['fips'].apply(str)
+fips_crosswalk['fips'] = fips_crosswalk['fips'].str.zfill(5)
+fips_crosswalk['new_fips'] = fips_crosswalk['new_fips'].apply(str)
+fips_crosswalk['new_fips'] = fips_crosswalk['new_fips'].str.zfill(5)
+county_map = county_map[['fips','geometry']]
+county_map['year'] = 2000
+county_comb_df = pd.merge(county_map,fips_crosswalk,on=['fips','year'],how='inner')
+county_comb_df = county_comb_df[['new_fips','geometry']]
+county_comb_df.columns = ['fips','geometry']
+county_final_map = county_comb_df.dissolve(by='fips')
+county_shapfile_path = os.path.join(cd,r'fips','fips.shp')
+county_final_map.to_file(county_shapfile_path,driver='ESRI Shapefile')
 
 # TEST NEW SHAPEFILES BY PLOTTING
+## fips shapefile
+county_reload_map = gpd.read_file(county_shapfile_path)
+projection = "+proj=laea +lat_0=30 +lon_0=-95"
+fig, ax = plt.subplots(1, figsize=(8.5,6.5))
+ax.axis('off')
+county_reload_map = county_reload_map.to_crs(projection)
+county_reload_map.plot(ax=ax,facecolor="none",linewidth=0.5,edgecolor='gray')
+plt.title('FIPS (Consistent) Boundaries')
+cfs_plot_path = os.path.join(cd,r'fips','fips_bound_plot.png')
+plt.savefig(cfs_plot_path,bbox_inches='tight',dpi=300)
+
 ##cfs shapefile
 cfs_reload_map = gpd.read_file(cfs_shapfile_path)
 projection = "+proj=laea +lat_0=30 +lon_0=-95"
@@ -89,5 +116,4 @@ cz_reload_map.plot(ax=ax,facecolor="none",linewidth=0.5,edgecolor='gray')
 plt.title('CZ (2007) Boundaries')
 cz_plot_path = os.path.join(cd,r'cz00','cz_bound_plot.png')
 plt.savefig(cz_plot_path,bbox_inches='tight',dpi=300)
-
 
