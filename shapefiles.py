@@ -7,7 +7,7 @@ import itertools
 import warnings
 
 # SETUP
-cd = os.path.join(os.path.expanduser("~"),r'Projects',r'cfs_cz_shapefile_and_distances')
+cd = os.path.join(os.path.expanduser("~"),r'Documents',r'projects',r'cfs_cz_shapefile_and_distances')
 if not os.path.exists(os.path.join(cd,r'cfs07')):
     os.makedirs(os.path.join(cd,r'cfs07'))
 if not os.path.exists(os.path.join(cd,r'cz00')):
@@ -21,8 +21,8 @@ county_map = gpd.read_file(shapefile_path)
 county_map = county_map[(county_map['STATE'] != '02') & (county_map['STATE'] != '15') & (county_map['STATE'] != '72')]
 county_map['fips'] = county_map['STATE'] + county_map['COUNTY']
 warnings.filterwarnings("ignore")
-county_map = county_map.to_crs("EPSG:4326")
-county_map['geometry'] = county_map['geometry'].buffer(0.0001)
+county_map = county_map.to_crs("EPSG:5070")
+county_map['geometry'] = county_map['geometry'].buffer(5)
 warnings.filterwarnings("default")
 
 # MAKE CFS SHAPEFILE
