@@ -53,9 +53,12 @@ cfs_crosswalk['ANSI CNTY'] = cfs_crosswalk['ANSI CNTY'].apply(str)
 cfs_crosswalk['ANSI CNTY'] = cfs_crosswalk['ANSI CNTY'].str.zfill(3)
 cfs_crosswalk['fips'] = cfs_crosswalk['ANSI ST'] + cfs_crosswalk['ANSI CNTY']
 cfs_crosswalk['CFS07_AREA'] = cfs_crosswalk['CFS07_AREA'].apply(str)
-cfs_crosswalk.loc[(cfs_crosswalk['CFS07_AREA'] == '99999'), 'CFS07_AREA'] = cfs_crosswalk['ANSI ST'] + cfs_crosswalk['CFS07_AREA'] 
+cfs_crosswalk['CFS07_AREA'] = cfs_crosswalk['ANSI ST'] + cfs_crosswalk['CFS07_AREA'] 
+cfs_crosswalk = cfs_crosswalk[~(cfs_crosswalk['ANSI ST'] == '02') & ~(cfs_crosswalk['ANSI ST'] == '15')]
 cfs_crosswalk = cfs_crosswalk[['fips','CFS07_AREA','CFS07_NAME']]
 cfs_crosswalk.columns = ['fips', 'cfs_area','cfs_name']
+cfs_crosswalk_path = os.path.join(cd,r'cfs07',r'cfs_crosswalk.csv')
+cfs_crosswalk.to_csv(cfs_crosswalk_path,index=False)
 ##join county map and cfs crosswalk
 cfs_comb_df = pd.merge(county_final_map,cfs_crosswalk,on='fips',how='inner')
 cfs_map = cfs_comb_df.dissolve(by='cfs_name')
