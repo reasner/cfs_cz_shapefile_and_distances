@@ -78,6 +78,8 @@ cz_crosswalk['FIPS'] = cz_crosswalk['FIPS'].str.zfill(5)
 cz_crosswalk['Commuting Zone ID, 2000'] = cz_crosswalk['Commuting Zone ID, 2000'].apply(str)
 cz_crosswalk['Commuting Zone ID, 2000'] = cz_crosswalk['Commuting Zone ID, 2000'].str.zfill(3)
 cz_crosswalk.columns = ['fips', 'cz_area']
+cz_crosswalk_path = os.path.join(cd,r'cz00',r'cz_crosswalk.csv')
+cz_crosswalk.to_csv(cz_crosswalk_path,index=False)
 ##join county map and cfs crosswalk
 cz_comb_df = pd.merge(county_final_map,cz_crosswalk,on='fips',how='inner')
 cz_map = cz_comb_df.dissolve(by='cz_area')
