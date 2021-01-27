@@ -31,6 +31,8 @@ fips_crosswalk['fips'] = fips_crosswalk['fips'].apply(str)
 fips_crosswalk['fips'] = fips_crosswalk['fips'].str.zfill(5)
 fips_crosswalk['new_fips'] = fips_crosswalk['new_fips'].apply(str)
 fips_crosswalk['new_fips'] = fips_crosswalk['new_fips'].str.zfill(5)
+unifips_crosswalk = fips_crosswalk[['fips','new_fips']]
+unifips_crosswalk = unifips_crosswalk.drop_duplicates(subset=['fips','new_fips'])
 county_map = county_map[['fips','geometry']]
 county_map['year'] = 2000
 county_comb_df = pd.merge(county_map,fips_crosswalk,on=['fips','year'],how='inner')
@@ -57,8 +59,13 @@ cfs_crosswalk['CFS07_AREA'] = cfs_crosswalk['ANSI ST'] + cfs_crosswalk['CFS07_AR
 cfs_crosswalk = cfs_crosswalk[~(cfs_crosswalk['ANSI ST'] == '02') & ~(cfs_crosswalk['ANSI ST'] == '15')]
 cfs_crosswalk = cfs_crosswalk[['fips','CFS07_AREA','CFS07_NAME']]
 cfs_crosswalk.columns = ['fips', 'cfs_area','cfs_name']
+#extract crosswalk
+cfs_unifips_crosswalk = pd.merge(cfs_crosswalk,unifips_crosswalk,on='fips',how='inner')
+cfs_unifips_crosswalk = cfs_unifips_crosswalk[['cfs_area','cfs_name','new_fips']]
+cfs_unifips_crosswalk = cfs_unifips_crosswalk.drop_duplicates(subset=['cfs_area','cfs_name','new_fips'])
+cfs_unifips_crosswalk.columns = ['cfs_area', 'cfs_name', 'fips']
 cfs_crosswalk_path = os.path.join(cd,r'cfs07',r'cfs_crosswalk.csv')
-cfs_crosswalk.to_csv(cfs_crosswalk_path,index=False)
+cfs_unifips_crosswalk.to_csv(cfs_crosswalk_path,index=False)
 ##join county map and cfs crosswalk
 cfs_comb_df = pd.merge(county_final_map,cfs_crosswalk,on='fips',how='inner')
 cfs_map = cfs_comb_df.dissolve(by='cfs_name')
@@ -78,8 +85,16 @@ cz_crosswalk['FIPS'] = cz_crosswalk['FIPS'].str.zfill(5)
 cz_crosswalk['Commuting Zone ID, 2000'] = cz_crosswalk['Commuting Zone ID, 2000'].apply(str)
 cz_crosswalk['Commuting Zone ID, 2000'] = cz_crosswalk['Commuting Zone ID, 2000'].str.zfill(3)
 cz_crosswalk.columns = ['fips', 'cz_area']
+cz_crosswalk.loc[(cz_crosswalk['cz_area'] == '515'), 'cz_area'] = '005'
+#extract crosswalk
+cz_unifips_crosswalk = cz_crosswalk.copy()
+cz_unifips_crosswalk = cz_unifips_crosswalk[~(cz_unifips_crosswalk['fips'].str[:2] == '02') & ~(cz_unifips_crosswalk['fips'].str[:2] == '15')] 
+cz_unifips_crosswalk = pd.merge(cz_unifips_crosswalk,unifips_crosswalk,on='fips',how='inner')
+cz_unifips_crosswalk = cz_unifips_crosswalk[['cz_area','new_fips']]
+cz_unifips_crosswalk = cz_unifips_crosswalk.drop_duplicates(subset=['cz_area','new_fips'])
+cz_unifips_crosswalk.columns = ['cz_area','fips']
 cz_crosswalk_path = os.path.join(cd,r'cz00',r'cz_crosswalk.csv')
-cz_crosswalk.to_csv(cz_crosswalk_path,index=False)
+cz_unifips_crosswalk.to_csv(cz_crosswalk_path,index=False)
 ##join county map and cfs crosswalk
 cz_comb_df = pd.merge(county_final_map,cz_crosswalk,on='fips',how='inner')
 cz_map = cz_comb_df.dissolve(by='cz_area')
