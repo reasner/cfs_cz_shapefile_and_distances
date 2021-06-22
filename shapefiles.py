@@ -7,7 +7,7 @@ import itertools
 import warnings
 
 # SETUP
-cd = os.path.join(os.path.expanduser("~"),r'Documents',r'projects',r'cfs_cz_shapefile_and_distances')
+cd = os.path.join(os.path.expanduser("~"),r'Dropbox',r'projects',r'cfs_cz_shapefile_and_distances')
 if not os.path.exists(os.path.join(cd,r'cfs07')):
     os.makedirs(os.path.join(cd,r'cfs07'))
 if not os.path.exists(os.path.join(cd,r'cz00')):
