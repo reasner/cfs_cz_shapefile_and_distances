@@ -75,7 +75,7 @@ cfs_shapfile_path = os.path.join(cd,r'cfs07','cfs07.shp')
 cfs_map.to_file(cfs_shapfile_path,driver='ESRI Shapefile')
 
 # MAKE CZ SHAPEFILE
-cz_crosswalk_path = os.path.join(cd,r'cz00_eqv_v1.xls')
+cz_crosswalk_path = os.path.join(cd,r'cz00_eqv_v2.xls')
 cz_crosswalk_xls = pd.ExcelFile(cz_crosswalk_path,engine='xlrd')
 cz_crosswalk_xls_sheet_names = cz_crosswalk_xls.sheet_names
 cz_crosswalk = cz_crosswalk_xls.parse(cz_crosswalk_xls_sheet_names[0])
